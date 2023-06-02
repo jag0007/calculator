@@ -29,14 +29,14 @@ body {
     border-radius: 3px;
 }
 
-.number {
+.input {
     width: 23px;
     padding: 0px;
     border: solid 1px; 
     border-radius: 3px;
 }
 
-.number0 {
+.zero {
     width: 50px;
     border: solid 1px; 
     border-radius: 3px;
@@ -51,52 +51,146 @@ body {
     <div id="screen">0000000</div>
     <div id="buttons">
         <div class="button-row">
-            <button class="number">AC</button>
-            <button class="number">+/-</button>
-            <button class="number">%</button>
-            <button class="number">+</button>
+            <button class="input">AC</button>
+            <button class="input">+/-</button>
+            <button class="input">%</button>
+            <button class="input operation">+</button>
         </div>
         <div class="button-row">
-            <button class="number">7</button>
-            <button class="number">8</button>
-            <button class="number">9</button>
-            <button class="number">-</button>
+            <button class="number input">7</button>
+            <button class="number input">8</button>
+            <button class="number input">9</button>
+            <button class="input operation">-</button>
         </div>
         <div class="button-row">
-            <button class="number">4</button>
-            <button class="number">5</button>
-            <button class="number">6</button>
-            <button class="number">*</button>
+            <button class="number input">4</button>
+            <button class="number input">5</button>
+            <button class="number input">6</button>
+            <button class="input operation">x</button>
         </div>
         <div class="button-row">
-            <button class="number">1</button>
-            <button class="number">2</button>
-            <button class="number">3</button>
-            <button class="number">/</button>
+            <button class="number input">1</button>
+            <button class="number input">2</button>
+            <button class="number input">3</button>
+            <button class="input operation">/</button>
         </div>
         <div class="button-row">
-            <button class="number, number0">0</button>
-            <button class="number">.</button>
-            <button class="number">=</button>
+            <button class="number input zero">0</button>
+            <button class="number input">.</button>
+            <button class="input evaluate">=</button>
         </div>
     </div>
     </div>    
     <h1>Bottom</h1>
     <script>
-        class Calculator {
-            current_value = 0;
+        class CalculatorModel {
+            constructor() {
+                this.register = undefined;
+                this.buffer = "CLEAR";
+                this.operation = undefined;
+                this.new_input_flag = true;
+            }
+
+            input_number(number){
+                if (this.new_input_flag) {
+                    this.buffer = number;
+                    this.new_input_flag = false;
+                } else {
+                    this.buffer += number;
+                }
+            }
             
-            update_screen(e) {
-                document.querySelector('#screen').textContent = e.target.textContent;
+            input_operator(operator) {
+                if (this.register != undefined) {
+                    this.evaluate();
+                } else {
+                    this.register = this.buffer;
+                }
+                if (operator === "+") this.operation = this.add;
+                if (operator === "-") this.operation = this.sub;
+
+                this.new_input_flag = true;
+            }
+
+            input_special(operator) {
+                if (operator === "=") {
+                    this.evaluate();
+                    this.buffer = this.register;
+                    this.register = undefined;
+                    this.new_input_flag = true;
+                }
+            }
+
+            evaluate() {
+                this.register = String(this.operation(this.register, this.buffer));
+            }
+
+            add(a, b) {
+                return Number(a) + Number(b);
+            }
+
+            sub(a, b) {
+                return Number(a) - Number(b);
             }
         }
 
-        function update_display(e) {
-            console.log("done");
-            document.querySelector('#screen').textContent = e.target.textContent;
+        class CalculatorView {
+
+            constructor() {
+                this.screen = document.querySelector('#screen');
+                [...document.querySelectorAll('.input')].forEach(button => button.addEventListener('click', this.myHandler));
+                this.update_list = [];
+            }
+
+            update_screen(value) {
+                this.screen.textContent = value;
+            }
+
+            add_to_update_list(listener) {
+                this.update_list.push(listener);
+            }
         }
-        const calc = new Calculator();
-        const buttonList = [...document.querySelectorAll('.number')].forEach(button => button.addEventListener('click', calc.update_screen));
+
+        class Calculator {
+            constructor(model, view) {
+                this.model = model;
+                this.view = view;
+                this.view.add_to_update_list(this);
+                this.view.update_screen(this.model.buffer); 
+            }
+
+
+        }
+
+         
+        const calc = new CalculatorModel();
+        calc.input_number("7");
+        console.log(calc.register);
+        console.log(calc.buffer);
+        calc.input_operator("+");
+        console.log(calc.register);
+        console.log(calc.buffer);
+        calc.input_number("8");
+        console.log(calc.register);
+        console.log(calc.buffer);
+        calc.input_operator("-");
+        console.log(calc.register);
+        console.log(calc.buffer);
+        calc.input_number("3");
+        console.log(calc.register);
+        console.log(calc.buffer);
+        calc.input_special("=");
+        console.log(calc.register);
+        console.log(calc.buffer);
+        calc.input_operator("+");
+        console.log(calc.register);
+        console.log(calc.buffer);
+        calc.input_number("3");
+        console.log(calc.register);
+        console.log(calc.buffer);
+        calc.input_special("=");
+        console.log(calc.register);
+        console.log(calc.buffer);
     </script>
 </body>
 </html>
