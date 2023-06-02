@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+<style>
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#case {
+    background-color: brown;
+    padding: 5px;
+    border: solid 1px; 
+    border-radius: 3px;
+}
+
+#screen {
+    background-color: blue;
+    padding: 5px;
+    margin-bottom: 5px;
+    color: white;
+    border: solid 1px; 
+    border-radius: 3px;
+}
+
+.number {
+    width: 23px;
+    padding: 0px;
+    border: solid 1px; 
+    border-radius: 3px;
+}
+
+.number0 {
+    width: 50px;
+    border: solid 1px; 
+    border-radius: 3px;
+    padding: 0px;
+}
+
+</style>
+</head>
+<body>
+    <h1>Calculator</h1>
+    <div id="case">
+    <div id="screen">0000000</div>
+    <div id="buttons">
+        <div class="button-row">
+            <button class="number">AC</button>
+            <button class="number">+/-</button>
+            <button class="number">%</button>
+            <button class="number">+</button>
+        </div>
+        <div class="button-row">
+            <button class="number">7</button>
+            <button class="number">8</button>
+            <button class="number">9</button>
+            <button class="number">-</button>
+        </div>
+        <div class="button-row">
+            <button class="number">4</button>
+            <button class="number">5</button>
+            <button class="number">6</button>
+            <button class="number">*</button>
+        </div>
+        <div class="button-row">
+            <button class="number">1</button>
+            <button class="number">2</button>
+            <button class="number">3</button>
+            <button class="number">/</button>
+        </div>
+        <div class="button-row">
+            <button class="number, number0">0</button>
+            <button class="number">.</button>
+            <button class="number">=</button>
+        </div>
+    </div>
+    </div>    
+    <h1>Bottom</h1>
+    <script>
+        class Calculator {
+            current_value = 0;
+            
+            update_screen(e) {
+                document.querySelector('#screen').textContent = e.target.textContent;
+            }
+        }
+
+        function update_display(e) {
+            console.log("done");
+            document.querySelector('#screen').textContent = e.target.textContent;
+        }
+        const calc = new Calculator();
+        const buttonList = [...document.querySelectorAll('.number')].forEach(button => button.addEventListener('click', calc.update_screen));
+    </script>
+</body>
+</html>
