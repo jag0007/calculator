@@ -123,6 +123,7 @@ body {
 
             evaluate() {
                 this.register = String(this.operation(this.register, this.buffer));
+                this.buffer = this.register;
             }
 
             add(a, b) {
@@ -138,59 +139,81 @@ body {
 
             constructor() {
                 this.screen = document.querySelector('#screen');
-                [...document.querySelectorAll('.input')].forEach(button => button.addEventListener('click', this.myHandler));
-                this.update_list = [];
+            }
+
+            bindInputNumber(handler) {
+                [...document.querySelectorAll('.input')].forEach(button => button.addEventListener('click', event => {
+                    handler(event.target.textContent);
+                }));
             }
 
             update_screen(value) {
                 this.screen.textContent = value;
             }
 
-            add_to_update_list(listener) {
-                this.update_list.push(listener);
-            }
         }
 
         class Calculator {
+
             constructor(model, view) {
+                this.numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."];
+                this.operators = ["+","-", "x","/"];
+                this.specials = ["="];
                 this.model = model;
                 this.view = view;
-                this.view.add_to_update_list(this);
+                this.view.bindInputNumber(this.handleNumber.bind(this));
                 this.view.update_screen(this.model.buffer); 
             }
 
+            handleNumber(value) {
+                console.log("this: ");
+                console.log(this.numbers);
+                if (this.numbers.includes(value)) {
+                    this.model.input_number(value);
+                } else if (this.operators.includes(value)) {
+                    this.model.input_operator(value);
+                } else if (this.specials.includes(value)) {
+                    this.model.input_special(value);
+                } else {
+                    console.log(value);
+                }
 
+                this.view.update_screen(this.model.buffer);
+            }
         }
-
-         
-        const calc = new CalculatorModel();
-        calc.input_number("7");
-        console.log(calc.register);
-        console.log(calc.buffer);
-        calc.input_operator("+");
-        console.log(calc.register);
-        console.log(calc.buffer);
-        calc.input_number("8");
-        console.log(calc.register);
-        console.log(calc.buffer);
-        calc.input_operator("-");
-        console.log(calc.register);
-        console.log(calc.buffer);
-        calc.input_number("3");
-        console.log(calc.register);
-        console.log(calc.buffer);
-        calc.input_special("=");
-        console.log(calc.register);
-        console.log(calc.buffer);
-        calc.input_operator("+");
-        console.log(calc.register);
-        console.log(calc.buffer);
-        calc.input_number("3");
-        console.log(calc.register);
-        console.log(calc.buffer);
-        calc.input_special("=");
-        console.log(calc.register);
-        console.log(calc.buffer);
+        
+        const model = new CalculatorModel();
+        const view = new CalculatorView();
+        const calc = new Calculator(model, view);
+        //const view = new CalculatorView(); 
+        //const calc = new CalculatorModel();
+        //calc.input_number("7");
+        //console.log(calc.register);
+        //console.log(calc.buffer);
+        //calc.input_operator("+");
+        //console.log(calc.register);
+        //console.log(calc.buffer);
+        //calc.input_number("8");
+        //console.log(calc.register);
+        //console.log(calc.buffer);
+        //calc.input_operator("-");
+        //console.log(calc.register);
+        //console.log(calc.buffer);
+        //calc.input_number("3");
+        //console.log(calc.register);
+        //console.log(calc.buffer);
+        //calc.input_special("=");
+        //console.log(calc.register);
+        //console.log(calc.buffer);
+        //calc.input_operator("+");
+        //console.log(calc.register);
+        //console.log(calc.buffer);
+        //calc.input_number("3");
+        //console.log(calc.register);
+        //console.log(calc.buffer);
+        //calc.input_special("=");
+        //console.log(calc.register);
+        //console.log(calc.buffer);
     </script>
 </body>
 </html>
